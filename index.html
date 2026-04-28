@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoPulse - SDG12 責任消費與生產</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <script src="https://jsdelivr.net"></script>
     <style>
         :root {
             --primary-green: #4A7C59;
@@ -18,264 +17,51 @@
             --accent-orange: #D98324;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-
-        body {
-            background-color: var(--earth-beige);
-            color: var(--text-gray);
-            line-height: 1.6;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans TC', sans-serif; }
+        body { background-color: var(--earth-beige); color: var(--text-gray); line-height: 1.6; }
 
         /* 導覽列 */
-        nav {
-            background-color: white;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-green);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-gray);
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary-green);
-        }
+        nav { background-color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary-green); display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; list-style: none; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-gray); font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary-green); }
 
         /* Hero 區塊 */
-        .hero {
-            height: 80vh;
-            background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            color: var(--dark-olive);
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            color: var(--primary-green);
-            font-weight: 500;
-        }
+        .hero { height: 80vh; background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://unsplash.com'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 4rem; color: var(--dark-olive); margin-bottom: 10px; }
+        .hero p { font-size: 1.5rem; color: var(--primary-green); font-weight: 500; }
 
         /* 內容區塊通用樣式 */
-        section {
-            padding: 80px 10%;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-            font-size: 2.5rem;
-            color: var(--dark-olive);
-        }
+        section { padding: 80px 10%; }
+        .section-title { text-align: center; margin-bottom: 50px; font-size: 2.5rem; color: var(--dark-olive); }
 
         /* 關於我們 */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .about-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 
-        .about-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        /* 問題與解方 (卡片翻轉效果) */
-        .issue-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .flip-card {
-            background-color: transparent;
-            width: 100%;
-            height: 350px;
-            perspective: 1000px;
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        /* 移除 hover 效果，改用 class 控制翻轉 */
-        .flip-card.is-flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            border-radius: 20px;
-        }
-
-        .flip-card-front {
-            background-color: white;
-            color: var(--dark-olive);
-            border: 2px solid var(--light-green);
-        }
-
-        .flip-card-back {
-            background-color: var(--primary-green);
-            color: white;
-            transform: rotateY(180deg);
-        }
-
-        .flip-card i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary-green);
-        }
-
-        .flip-card-back i {
-            color: white;
-        }
-
-        /* 新增查看更多按鈕樣式 */
-        .read-more-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .read-more-btn:hover {
-            background-color: var(--dark-olive);
-        }
-
-        .btn-back {
-            background-color: white;
-            color: var(--primary-green);
-        }
-
-        .btn-back:hover {
-            background-color: #f0f0f0;
-        }
+        /* 問題與解方 (保留原本題目區) */
+        .issue-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .flip-card { background-color: transparent; width: 100%; height: 350px; perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        .flip-card.is-flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; border-radius: 20px; }
+        .flip-card-front { background-color: white; color: var(--dark-olive); border: 2px solid var(--light-green); }
+        .flip-card-back { background-color: var(--primary-green); color: white; transform: rotateY(180deg); }
+        .flip-card i { font-size: 3rem; margin-bottom: 20px; color: var(--primary-green); }
 
         /* 環保測驗區 */
-        .quiz-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .quiz-container { background: white; padding: 40px; border-radius: 20px; max-width: 900px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .question { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+        .options label { display: block; margin: 10px 0; cursor: pointer; }
+        .btn { background: var(--primary-green); color: white; padding: 12px 30px; border: none; border-radius: 25px; cursor: pointer; font-size: 1rem; transition: 0.3s; font-weight: bold; }
+        .btn:hover { background: var(--dark-olive); transform: translateY(-2px); }
 
-        .question {
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-        }
-
-        .options label {
-            display: block;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-
-        .result-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 50px;
-            align-items: center;
-        }
-
-        #radarChart {
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* 頁尾 */
-        footer {
-            background: var(--dark-olive);
-            color: white;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .btn {
-            background: var(--primary-green);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            background: var(--dark-olive);
-        }
+        /* 結果網格 */
+        .result-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; margin-top: 30px; }
 
         @media (max-width: 768px) {
-            .about-grid, .result-area {
-                grid-template-columns: 1fr;
-            }
+            .about-grid, .result-grid { grid-template-columns: 1fr; }
             .hero h1 { font-size: 2.5rem; }
         }
     </style>
@@ -283,9 +69,7 @@
 <body>
 
     <nav>
-        <div class="logo">
-            <i class="fas fa-leaf"></i> ECO PULSE
-        </div>
+        <div class="logo"><i class="fas fa-leaf"></i> ECO PULSE</div>
         <ul class="nav-links">
             <li><a href="#home">首頁</a></li>
             <li><a href="#about">關於我們</a></li>
@@ -304,7 +88,7 @@
         <div class="about-grid">
             <div class="about-card">
                 <h3>問題意識</h3>
-                <p>現代社會存在過度消費、塑膠污染與食物浪費等問題。我們希望透過本網站,讓使用者了解自身的消費習慣對環境的影響。</p>
+                <p>現代社會存在過度消費、塑膠污染與食物浪費等問題。我們希望透過本網站，讓使用者了解自身的消費習慣對環境的影響。</p>
             </div>
             <div class="about-card">
                 <h3>我們的理念</h3>
@@ -313,225 +97,191 @@
         </div>
     </section>
 
-    <section id="issues" style="background-color: #E9EDC9;">
-        <h2 class="section-title">問題與解決方案</h2>
+    <!-- 保留原本的問題區 -->
+    <section id="issues">
+        <h2 class="section-title">核心環境議題</h2>
         <div class="issue-grid">
-            <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front">
-                        <i class="fas fa-shopping-cart"></i>
-                        <h3>過度消費</h3>
-                        <button class="read-more-btn">點擊查看更多</button>
+                        <i class="fas fa-trash-alt"></i>
+                        <h3>剩食問題</h3>
+                        <p>點擊查看解方</p>
                     </div>
                     <div class="flip-card-back">
-                        <i class="fas fa-check-circle"></i>
-                        <h3>聰明購買</h3>
-                        <p>購買前三思，選擇耐用、可修復的產品，拒絕快時尚與非必要的購買。</p>
-                        <button class="read-more-btn btn-back">返回</button>
+                        <p>全球每年有 1/3 的食物被浪費。建議從「惜食良品」與「計畫性購物」做起。</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front">
                         <i class="fas fa-box-open"></i>
-                        <h3>塑膠污染</h3>
-                        <button class="read-more-btn">點擊查看更多</button>
+                        <h3>過度包裝</h3>
+                        <p>點擊查看解方</p>
                     </div>
                     <div class="flip-card-back">
-                        <i class="fas fa-recycle"></i>
-                        <h3>減塑生活</h3>
-                        <p>攜帶環保餐具與購物袋，減少購買單次包裝產品，支持裸裝商店。</p>
-                        <button class="read-more-btn btn-back">返回</button>
+                        <p>減少網購頻率，並優先選擇提供環保包材或補充包的產品。</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="flip-card" onclick="toggleFlip(this)">
+            <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
                 <div class="flip-card-inner">
                     <div class="flip-card-front">
-                        <i class="fas fa-apple-alt"></i>
-                        <h3>食物浪費</h3>
-                        <button class="read-more-btn">點擊查看更多</button>
+                        <i class="fas fa-tshirt"></i>
+                        <h3>快時尚污染</h3>
+                        <p>點擊查看解方</p>
                     </div>
                     <div class="flip-card-back">
-                        <i class="fas fa-utensils"></i>
-                        <h3>惜食行動</h3>
-                        <p>計畫性採買、妥善保存食物，優先選擇在地食材減少碳足跡。</p>
-                        <button class="read-more-btn btn-back">返回</button>
+                        <p>延長衣物壽命，選擇高品質基礎款，或購買二手服飾。</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-<section id="quiz">
-    <h2 class="section-title">環保指數測驗 - SDG 12 責任消費與生產</h2>
-    <div class="quiz-container">
-        <!-- 1. 開始畫面 -->
-        <div id="quiz-start-view" style="text-align: center; padding: 20px;">
-            <i class="fas fa-medal" style="font-size: 3.5rem; color: var(--accent-orange); margin-bottom: 20px;"></i>
-            <p style="font-size: 1.1rem; margin-bottom: 30px;">針對「責任消費與生產」設計的 20 題測驗<br>測完領取您的環保證書與深度個人化分析！</p>
-            <button class="btn" onclick="startQuiz()">開始測驗</button>
-        </div>
-
-        <!-- 2. 分頁測驗表單 -->
-        <div id="quiz-form-view" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 id="category-title" style="color: var(--primary-green);"></h3>
-                <span style="color: #888;">第 <span id="current-page-display">1</span> / 5 頁</span>
-            </div>
-            <div id="questions-wrapper"></div>
-            <p id="error-msg" style="color: #d93025; font-size: 0.9rem; margin-top: 10px; display: none;">⚠️ 請完成本頁所有題目再繼續唷！</p>
-            <div style="margin-top: 30px; display: flex; justify-content: space-between;">
-                <button id="prevBtn" class="btn" onclick="movePage(-1)" style="background: #999; visibility: hidden;">上一頁</button>
-                <button id="nextBtn" class="btn" onclick="movePage(1)">下一頁</button>
-                <button id="submitBtn" class="btn" onclick="calculateFinalScore()" style="display: none; background: var(--accent-orange);">產出我的環保報告</button>
-            </div>
-        </div>
-
-        <!-- 3. 結果與證書區 -->
-        <div id="result-view" style="display: none;">
-            <div id="certificate-card" style="padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                <h2 id="rank-name" style="margin-bottom: 10px; letter-spacing: 2px;"></h2>
-                <div id="rank-icon" style="font-size: 4rem; margin: 10px 0;"></div>
-                <p id="total-score-val" style="font-weight: bold; font-size: 1.2rem;"></p>
-                <p id="rank-description" style="margin-top: 10px; opacity: 0.9;"></p>
+    <!-- 測驗區 -->
+    <section id="quiz">
+        <h2 class="section-title">環保指數測驗</h2>
+        <div class="quiz-container">
+            <!-- 1. 開始畫面 -->
+            <div id="quiz-start-view" style="text-align: center; padding: 20px;">
+                <i class="fas fa-medal" style="font-size: 3.5rem; color: var(--accent-orange); margin-bottom: 20px;"></i>
+                <p style="font-size: 1.1rem; margin-bottom: 30px;">針對「責任消費與生產」設計的 20 題測驗<br>測完領取您的環保證書與分析圖表！</p>
+                <button class="btn" onclick="startQuiz()">開始測驗</button>
             </div>
 
-            <div class="result-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div>
-                    <canvas id="radarChart"></canvas>
+            <!-- 2. 分頁測驗表單 -->
+            <div id="quiz-form-view" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 id="category-title" style="color: var(--primary-green);"></h3>
+                    <span style="color: #888;">第 <span id="current-page-display">1</span> / 5 頁</span>
                 </div>
-                <div class="about-card" style="border-top: 5px solid var(--primary-green);">
-                    <h3 style="margin-bottom: 15px;"><i class="fas fa-microscope"></i> 深度行為診斷</h3>
-                    <p id="weakness-analysis" style="color: #d93025; font-weight: bold; margin-bottom: 10px;"></p>
-                    <p id="personalized-advice" style="font-size: 1rem; line-height: 1.6; color: #555;"></p>
-                    <button class="btn" onclick="location.reload()" style="margin-top: 25px; width: 100%; background: var(--dark-olive);">重新檢測習慣</button>
+                <div id="questions-wrapper"></div>
+                <p id="error-msg" style="color: #d93025; font-size: 0.9rem; margin-top: 10px; display: none;">⚠️ 請完成本頁所有題目再繼續唷！</p>
+                <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+                    <button id="prevBtn" class="btn" onclick="movePage(-1)" style="background: #999; visibility: hidden;">上一頁</button>
+                    <button id="nextBtn" class="btn" onclick="movePage(1)">下一頁</button>
+                    <button id="submitBtn" class="btn" onclick="calculateFinalScore()" style="display: none; background: var(--accent-orange);">分析我的等級</button>
+                </div>
+            </div>
+
+            <!-- 3. 結果與金色證書 -->
+            <div id="result-view" style="display: none;">
+                <div id="certificate-card" style="padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                    <h2 id="rank-name" style="margin-bottom: 10px;"></h2>
+                    <div id="rank-icon" style="font-size: 4rem; margin: 10px 0;"></div>
+                    <p id="total-score-val" style="font-weight: bold;"></p>
+                    <p id="rank-description" style="margin-top: 10px;"></p>
+                </div>
+                <div class="result-grid">
+                    <div><canvas id="radarChart"></canvas></div>
+                    <div class="about-card">
+                        <h4 style="margin-bottom: 10px; color: var(--primary-green);">🌱 永續生活建議</h4>
+                        <p id="personalized-advice" style="font-size: 0.95rem;"></p>
+                        <button class="btn" onclick="location.reload()" style="margin-top: 20px; width: 100%; background: #666;">再測一次</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<script>
-    const quizData = [
-        { cat: "綠色飲食", qs: ["點餐時若食量較小，您是否會主動要求「飯減量」？", "您是否會優先購買「在地生產」的當季食材？", "您是否願意購買超商的「即期良品」來減少浪費？", "外出時您是否會自備水壺、餐具或環保吸管？"] },
-        { cat: "明智購物", qs: ["購買衣服前，您是否會先確認衣櫃已有類似款式？", "您是否會刻意避開過度包裝（如過多塑膠膜）的商品？", "您是否會減少網購頻率，降低包材浪費？", "您是否會優先選擇「大容量裝」或「補充包」？"] },
-        { cat: "物品再生", qs: ["當電器壞掉時，您是否會嘗試「修理」而非買新的？", "您是否會購買二手商品或參與物資交換？", "您是否會重複利用紙箱或提袋作收納或寄物？", "淘汰物品時，您是否會選擇轉贈而非直接丟棄？"] },
-        { cat: "節能減碳", qs: ["您是否會主動進行洗淨容器、撕標籤等細緻分類？", "您是否習慣使用「電子載具」存發票而不列印？", "您是否會清理雲端空間以減少資料中心耗能？", "離開房間時您是否會確實關閉電源或拔插頭？"] },
-        { cat: "永續意識", qs: ["購買家電時，您是否會尋找「環保標章」？", "旅遊時您是否自備盥洗用品，拒用一次性備品？", "購買品牌前，您是否考量該企業的環保聲譽？", "您是否會鼓勵親友一起參與綠色生活？"] }
-    ];
+    <footer>
+        <p>&copy; 2024 EcoPulse - 讓我們一起守護地球</p>
+    </footer>
 
-    const categoryNames = ['綠色飲食', '明智購物', '物品再生', '節能減碳', '永續意識'];
-    const weakPointAdvice = {
-        '綠色飲食': '您在飲食方面的碳足跡有優化空間。試著每週執行一天「零剩食」，並優先選擇醜蔬果或即期品。',
-        '明智購物': '購物衝動可能是您的挑戰。建議實行「24小時冷靜期」，買東西前先問自己：這是需要還是想要？',
-        '物品再生': '您較習慣「汰舊換新」。試著尋找家附近的修理店，或是將二手物捐給需要的單位，延長物品生命周期。',
-        '節能減碳': '細節隱藏在能源裡。除了隨手關燈，清理電子郵件垃圾箱也是一種現代人的數位減碳法。',
-        '永續意識': '您的環保行動很棒，但可能較為孤軍奮戰。試著發揮影響力，讓永續標章成為您選擇品牌的首要標準。'
-    };
+    <script>
+        const quizData = [
+            { cat: "綠色飲食", qs: ["點餐時若食量較小，您是否會主動要求「飯減量」？", "您是否會優先購買「在地生產」的當季食材？", "您是否願意購買超商的「即期良品」來減少浪費？", "外出時您是否會自備水壺、餐具或環保吸管？"] },
+            { cat: "明智購物", qs: ["購買衣服前，您是否會先確認衣櫃已有類似款式？", "您是否會刻意避開過度包裝（如過多塑膠膜）的商品？", "您是否會減少網購頻率，降低包材浪費？", "您是否會優先選擇「大容量裝」或「補充包」？"] },
+            { cat: "物品再生", qs: ["當電器壞掉時，您是否會嘗試「修理」而非買新的？", "您是否會購買二手商品或參與物資交換？", "您是否會重複利用紙箱或提袋作收納或寄物？", "淘汰物品時，您是否會選擇轉贈而非直接丟棄？"] },
+            { cat: "節能減碳", qs: ["您是否會主動進行洗淨容器、撕標籤等細緻分類？", "您是否習慣使用「電子載具」存發票而不列印？", "您是否會清理雲端空間以減少資料中心耗能？", "離開房間時您是否會確實關閉電源或拔插頭？"] },
+            { cat: "永續意識", qs: ["購買家電時，您是否會尋找「環保標章」？", "旅遊時您是否自備盥洗用品，拒用一次性備品？", "購買品牌前，您是否考量該企業的環保聲譽？", "您是否會鼓勵親友一起參與綠色生活？"] }
+        ];
 
-    let currentStep = 0;
-    let userAnswers = Array(20).fill(null);
+        let currentStep = 0;
+        let userAnswers = Array(20).fill(null);
 
-    function startQuiz() {
-        document.getElementById('quiz-start-view').style.display = 'none';
-        document.getElementById('quiz-form-view').style.display = 'block';
-        renderStep();
-    }
+        function startQuiz() {
+            document.getElementById('quiz-start-view').style.display = 'none';
+            document.getElementById('quiz-form-view').style.display = 'block';
+            renderStep();
+        }
 
-    function renderStep() {
-        const wrapper = document.getElementById('questions-wrapper');
-        const data = quizData[currentStep];
-        document.getElementById('category-title').innerText = data.cat;
-        document.getElementById('current-page-display').innerText = currentStep + 1;
-        document.getElementById('error-msg').style.display = 'none';
-        
-        let html = '';
-        data.qs.forEach((q, index) => {
-            const qIdx = currentStep * 4 + index;
-            const savedVal = userAnswers[qIdx];
-            html += `<div class="question"><p><strong>${qIdx + 1}. ${q}</strong></p>
-                <div class="options" style="display:flex; gap:20px; margin-top:10px;">
-                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="5" ${savedVal === 5 ? 'checked' : ''}> 總是</label>
-                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="3" ${savedVal === 3 ? 'checked' : ''}> 偶爾</label>
-                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="1" ${savedVal === 1 ? 'checked' : ''}> 從不</label>
-                </div></div>`;
-        });
-        wrapper.innerHTML = html;
-        document.getElementById('prevBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-        document.getElementById('nextBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
-        document.getElementById('submitBtn').style.display = currentStep === 4 ? 'inline-block' : 'none';
-    }
+        function renderStep() {
+            const wrapper = document.getElementById('questions-wrapper');
+            const data = quizData[currentStep];
+            document.getElementById('category-title').innerText = data.cat;
+            document.getElementById('current-page-display').innerText = currentStep + 1;
+            document.getElementById('error-msg').style.display = 'none';
+            
+            let html = '';
+            data.qs.forEach((q, index) => {
+                const qIdx = currentStep * 4 + index;
+                const savedVal = userAnswers[qIdx];
+                html += `<div class="question"><p><strong>${qIdx + 1}. ${q}</strong></p>
+                    <div class="options">
+                        <label><input type="radio" name="q${qIdx}" value="5" ${savedVal === 5 ? 'checked' : ''}> 總是</label>
+                        <label><input type="radio" name="q${qIdx}" value="3" ${savedVal === 3 ? 'checked' : ''}> 偶爾</label>
+                        <label><input type="radio" name="q${qIdx}" value="1" ${savedVal === 1 ? 'checked' : ''}> 從不</label>
+                    </div></div>`;
+            });
+            wrapper.innerHTML = html;
+            document.getElementById('prevBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
+            document.getElementById('submitBtn').style.display = currentStep === 4 ? 'inline-block' : 'none';
+        }
 
-    function movePage(delta) {
-        if (delta > 0) {
-            for (let i = 0; i < 4; i++) {
-                if (!document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`)) {
-                    document.getElementById('error-msg').style.display = 'block'; return;
+        function movePage(delta) {
+            if (delta > 0) {
+                for (let i = 0; i < 4; i++) {
+                    if (!document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`)) {
+                        document.getElementById('error-msg').style.display = 'block'; return;
+                    }
                 }
             }
+            for (let i = 0; i < 4; i++) {
+                const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
+                if (sel) userAnswers[currentStep * 4 + i] = parseInt(sel.value);
+            }
+            currentStep += delta; renderStep();
         }
-        for (let i = 0; i < 4; i++) {
-            const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
-            if (sel) userAnswers[currentStep * 4 + i] = parseInt(sel.value);
+
+        function calculateFinalScore() {
+            for (let i = 0; i < 4; i++) {
+                const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
+                if (!sel) { document.getElementById('error-msg').style.display = 'block'; return; }
+                userAnswers[currentStep * 4 + i] = parseInt(sel.value);
+            }
+            const scores =;
+            let total = 0;
+            userAnswers.forEach((v, i) => { scores[Math.floor(i / 4)] += v; total += v; });
+            showResult(total, scores);
         }
-        currentStep += delta; renderStep();
-        window.scrollTo({ top: document.getElementById('quiz').offsetTop - 100, behavior: 'smooth' });
-    }
 
-    function calculateFinalScore() {
-        for (let i = 0; i < 4; i++) {
-            const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
-            if (!sel) { document.getElementById('error-msg').style.display = 'block'; return; }
-            userAnswers[currentStep * 4 + i] = parseInt(sel.value);
+        function showResult(total, scores) {
+            document.getElementById('quiz-form-view').style.display = 'none';
+            document.getElementById('result-view').style.display = 'block';
+            let rank = "", icon = "", color = "", advice = "";
+            if (total >= 90) { rank = "金色永續守護者"; icon = "🏆"; color = "#FFD700"; advice = "你是最棒的地球戰士！"; }
+            else if (total >= 70) { rank = "銀色綠色實踐家"; icon = "🥈"; color = "#E5E4E2"; advice = "做得很好，再加把勁！"; }
+            else { rank = "銅色環保潛力股"; icon = "🥉"; color = "#CD7F32"; advice = "從減少一個塑膠袋開始吧！"; }
+            
+            document.getElementById('certificate-card').style.backgroundColor = color;
+            document.getElementById('rank-name').innerText = rank;
+            document.getElementById('rank-icon').innerText = icon;
+            document.getElementById('total-score-val').innerText = `最終得分：${total} / 100`;
+            document.getElementById('personalized-advice').innerText = advice;
+
+            new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: ['飲食', '購物', '再生', '節能', '意識'],
+                    datasets: [{ data: scores, backgroundColor: 'rgba(74, 124, 89, 0.4)', borderColor: '#4A7C59', borderWidth: 2 }]
+                },
+                options: { scales: { r: { max: 20, beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+            });
         }
-        const scores =;
-        let total = 0;
-        userAnswers.forEach((v, i) => { scores[Math.floor(i / 4)] += v; total += v; });
-        showResult(total, scores);
-    }
-
-    function showResult(total, scores) {
-        document.getElementById('quiz-form-view').style.display = 'none';
-        document.getElementById('result-view').style.display = 'block';
-        
-        let rank = "", icon = "", color = "", desc = "";
-        if (total >= 90) { rank = "金色永續守護者"; icon = "🏆"; color = "#FFD700"; desc = "極致的永續生活家！地球因為有你而美好。"; }
-        else if (total >= 70) { rank = "銀色綠色實踐家"; icon = "🥈"; color = "#E5E4E2"; desc = "很棒的環保意識！你正朝著零廢棄生活穩健邁進。"; }
-        else if (total >= 50) { rank = "銅色環保潛力股"; icon = "🥉"; color = "#CD7F32"; desc = "具備基本概念，只要在細節處多加留意，就能大幅進步。"; }
-        else { rank = "地球觀察員"; icon = "🌱"; color = "#A8E6CF"; desc = "現在開始永遠不晚，從最簡單的減塑開始挑戰吧！"; }
-        
-        // 找出得分最低的分類
-        let minScore = Math.min(...scores);
-        let minIndex = scores.indexOf(minScore);
-        let weakestCategory = categoryNames[minIndex];
-
-        document.getElementById('certificate-card').style.backgroundColor = color;
-        document.getElementById('rank-name').innerText = rank;
-        document.getElementById('rank-icon').innerText = icon;
-        document.getElementById('total-score-val').innerText = `最終評分：${total} / 100`;
-        document.getElementById('rank-description').innerText = desc;
-        
-        document.getElementById('weakness-analysis').innerText = `💡 行動雷達警示：${weakestCategory}`;
-        document.getElementById('personalized-advice').innerText = weakPointAdvice[weakestCategory];
-
-        new Chart(document.getElementById('radarChart'), {
-            type: 'radar',
-            data: {
-                labels: categoryNames,
-                datasets: [{ data: scores, backgroundColor: 'rgba(74, 124, 89, 0.4)', borderColor: '#4A7C59', borderWidth: 2 }]
-            },
-            options: { scales: { r: { max: 20, beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
-        });
-        window.scrollTo({ top: document.getElementById('quiz').offsetTop - 50, behavior: 'smooth' });
-    }
-</script>
-
-
+    </script>
 </body>
 </html>
-
-
