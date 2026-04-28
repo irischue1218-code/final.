@@ -461,9 +461,15 @@
                 </div></div>`;
         });
         wrapper.innerHTML = html;
+        // 按鈕控制
         document.getElementById('prevBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-        document.getElementById('nextBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
-        document.getElementById('submitBtn').style.display = currentStep === 4 ? 'inline-block' : 'none';
+        if (currentStep === 4) {
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'none';
+        }
     }
 
     function movePage(delta) {
