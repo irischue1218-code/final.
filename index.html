@@ -370,51 +370,42 @@
     <h2 class="section-title">環保指數測驗 - SDG 12 責任消費與生產</h2>
     <div class="quiz-container">
         <!-- 1. 開始畫面 -->
-        <div id="quiz-start-view" style="text-align: center; padding: 40px;">
-            <i class="fas fa-seedling" style="font-size: 4rem; color: var(--primary-green); margin-bottom: 20px;"></i>
-            <p style="font-size: 1.2rem; margin-bottom: 30px;">想知道您的生活習慣有多愛地球嗎？<br>透過 20 題日常測驗，領取您的專屬環保等級證書！</p>
+        <div id="quiz-start-view" style="text-align: center; padding: 20px;">
+            <i class="fas fa-medal" style="font-size: 3.5rem; color: var(--accent-orange); margin-bottom: 20px;"></i>
+            <p style="font-size: 1.1rem; margin-bottom: 30px;">針對「責任消費與生產」設計的 20 題測驗<br>測完領取您的環保證書與個人化行為診斷！</p>
             <button class="btn" onclick="startQuiz()">開始測驗</button>
         </div>
 
-        <!-- 2. 測驗分頁表單 -->
+        <!-- 2. 分頁測驗表單 -->
         <div id="quiz-form-view" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h3 id="category-title" style="color: var(--primary-green);"></h3>
                 <span style="color: #888;">第 <span id="current-page-display">1</span> / 5 頁</span>
             </div>
-            
-            <div id="questions-wrapper">
-                <!-- 題目動態插入 -->
-            </div>
-
+            <div id="questions-wrapper"></div>
             <p id="error-msg" style="color: #d93025; font-size: 0.9rem; margin-top: 10px; display: none;">⚠️ 請完成本頁所有題目再繼續唷！</p>
-
             <div style="margin-top: 30px; display: flex; justify-content: space-between;">
-                <button id="prevBtn" class="btn" onclick="movePage(-1)" style="background: #999; visibility: hidden;">回上一頁</button>
+                <button id="prevBtn" class="btn" onclick="movePage(-1)" style="background: #999; visibility: hidden;">上一頁</button>
                 <button id="nextBtn" class="btn" onclick="movePage(1)">下一頁</button>
-                <button id="submitBtn" class="btn" onclick="calculateFinalScore()" style="display: none; background: var(--accent-orange);">分析我的等級</button>
+                <button id="submitBtn" class="btn" onclick="calculateFinalScore()" style="display: none; background: var(--accent-orange);">產出我的環保報告</button>
             </div>
         </div>
 
         <!-- 3. 結果與證書區 -->
         <div id="result-view" style="display: none;">
-            <div id="certificate-card" style="padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px; border: 5px double rgba(255,255,255,0.5); box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                <h2 id="rank-name" style="margin-bottom: 10px; font-size: 1.8rem; letter-spacing: 2px;"></h2>
-                <div id="rank-icon" style="font-size: 4.5rem; margin: 15px 0;"></div>
-                <p id="total-score-val" style="font-weight: bold; font-size: 1.3rem;"></p>
-                <hr style="margin: 20px 0; border: 0; border-top: 1px dashed rgba(0,0,0,0.2);">
-                <p id="rank-description" style="font-size: 1.1rem; line-height: 1.5;"></p>
+            <div id="certificate-card" style="padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                <h2 id="rank-name" style="margin-bottom: 10px;"></h2>
+                <div id="rank-icon" style="font-size: 4rem; margin: 10px 0;"></div>
+                <p id="total-score-val" style="font-weight: bold; font-size: 1.2rem;"></p>
+                <p id="rank-description" style="margin-top: 10px; opacity: 0.9;"></p>
             </div>
 
-            <!-- 結果網格：左圖表右建議 -->
-            <div class="result-area" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div>
-                    <canvas id="radarChart"></canvas>
-                </div>
-                <div id="advice-box" class="about-card" style="height: fit-content;">
-                    <h3 style="color: var(--primary-green); border-left: 5px solid var(--primary-green); padding-left: 10px; margin-bottom: 15px;">五大維度分析</h3>
-                    <p id="personalized-advice" style="line-height: 1.8;"></p>
-                    <button class="btn" onclick="location.reload()" style="margin-top: 30px; width: 100%; background: var(--dark-olive);">重新測驗</button>
+            <div class="result-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div><canvas id="radarChart"></canvas></div>
+                <div class="about-card" style="border-top: 5px solid var(--primary-green);">
+                    <h3 style="margin-bottom: 15px;"><i class="fas fa-microscope"></i> 行為分析建議</h3>
+                    <div id="personalized-advice" style="font-size: 1rem; line-height: 1.6; color: #555;"></div>
+                    <button class="btn" onclick="location.reload()" style="margin-top: 25px; width: 100%; background: var(--dark-olive);">重新檢測</button>
                 </div>
             </div>
         </div>
@@ -423,15 +414,35 @@
 
 <script>
     const quizData = [
-        { cat: "綠色飲食", qs: ["點餐時若食量較小，您是否會主動要求「飯減量」以減少剩食？", "您是否會優先購買「在地生產」的當季食材，減少運輸碳足跡？", "您是否願意購買超商的「即期良品」（如i珍食、65折）來減少食物浪費？", "外出用餐或買飲料時，您是否會自備水壺、餐具或環保吸管？"] },
-        { cat: "明智購物", qs: ["購買新衣服前，您是否會先確認衣櫃已有類似款式，避免衝動購物？", "您是否會刻意避開過度包裝（如過多塑膠膜、大型禮盒）的商品？", "您是否會盡量減少網購頻率，以降低物流產生的包材浪費？", "購物時，您是否會優先選擇「大容量裝」或「補充包」而非小包裝？"] },
-        { cat: "物品再生", qs: ["當電器或鞋包壞掉時，您是否會嘗試「找人修理」而非直接買新的？", "您是否會購買二手商品（如二手書、二手衣）或參與物資交換？", "您是否會重複利用收到的紙箱或提袋，轉作收納或再次寄物使用？", "淘汰不用物品時，您是否會優先選擇轉贈、捐贈而非直接當垃圾丟棄？"] },
-        { cat: "節能減碳", qs: ["您是否會主動進行精細的回收分類（如：洗淨容器、撕下瓶口鋁箔）？", "您是否已經習慣使用「電子載具」儲存發票，不索取紙本明細？", "您是否會定期清理雲端信箱或刪除不用的照片，減少伺服器耗能？", "離開房間或不使用電器時，您是否會確實關閉電源或拔除插頭？"] },
-        { cat: "永續意識", qs: ["購買清潔用品或家電時，您是否會優先找尋「環保標章」或「節能標章」？", "旅遊時，您是否會自備盥洗用品，拒絕使用飯店的一次性備品？", "購買商品前，您是否會稍微考量該品牌是否有環境保護的良好承諾？", "您是否會向親友分享環保資訊，或鼓勵他們一起參與綠色生活行動？"] }
+        { cat: "綠色飲食", qs: ["點餐時若食量較小，您是否會主動要求「飯減量」？", "您是否會優先購買「在地生產」的當季食材？", "您是否願意購買超商的「即期良品」來減少浪費？", "外出時您是否會自備水壺、餐具或環保吸管？"] },
+        { cat: "明智購物", qs: ["購買衣服前，您是否會先確認衣櫃已有類似款式？", "您是否會刻意避開過度包裝（如過多塑膠膜）的商品？", "您是否會減少網購頻率，降低包材浪費？", "您是否會優先選擇「大容量裝」或「補充包」？"] },
+        { cat: "物品再生", qs: ["當電器壞掉時，您是否會嘗試「修理」而非買新的？", "您是否會購買二手商品或參與物資交換？", "您是否會重複利用紙箱或提袋作收納或寄物？", "淘汰物品時，您是否會選擇轉贈而非直接丟棄？"] },
+        { cat: "節能減碳", qs: ["您是否會主動進行洗淨容器、撕標籤等細緻分類？", "您是否習慣使用「電子載具」存發票而不列印？", "您是否會清理雲端空間以減少資料中心耗能？", "離開房間時您是否會確實關閉電源或拔插頭？"] },
+        { cat: "永續意識", qs: ["購買家電時，您是否會尋找「環保標章」？", "旅遊時您是否自備盥洗用品，拒用一次性備品？", "購買品牌前，您是否考量該企業的環保聲譽？", "您是否會鼓勵親友一起參與綠色生活？"] }
     ];
 
+    const categoryNames = ['綠色飲食', '明智購物', '物品再生', '節能減碳', '永續意識'];
+
+  
+    const encouragement = {
+        '綠色飲食': '您是餐桌上的永續大師！對食材的珍惜展現了您對土地的深厚責任感。',
+        '明智購物': '您具備極佳的消費自律力，成功在物質過剩的時代守住簡約生活的底線。',
+        '物品再生': '您擁有惜物愛物的高尚靈魂，透過循環利用賦予了舊物精彩的第二生命。',
+        '節能減碳': '您是節能行動派！這些日常細微的節省，加總起來對地球是巨大的貢獻。',
+        '永續意識': '您的永續心態非常卓越，具備成為推動綠色生活領袖的巨大潛力。'
+    };
+  
+    const paragraphAdvice = {
+        '綠色飲食': '若能嘗試點餐時告知「飯減量」減少剩食，並優先購買即期品或在地食材會更好。',
+        '明智購物': '建議實行購物冷靜期，優先選擇裸裝或補充包商品以減少包材廢棄。',
+        '物品再生': '試著「以修代買」延長物品壽命，並將閒置物捐贈給需要的單位。',
+        '節能減碳': '可試著養成拔除待機插頭的習慣，並落實資源洗淨分類與數位郵件清理。',
+        '永續意識': '購物時，優先支持具環保標章的品牌，並主動向親友分享您的減塑生活經驗。'
+    };
+
+
     let currentStep = 0;
-    let userAnswers = Array(20).fill(null); // 初始化為 null，無預設答案
+    let userAnswers = Array(20).fill(null);
 
     function startQuiz() {
         document.getElementById('quiz-start-view').style.display = 'none';
@@ -450,118 +461,82 @@
         data.qs.forEach((q, index) => {
             const qIdx = currentStep * 4 + index;
             const savedVal = userAnswers[qIdx];
-            html += `
-                <div class="question">
-                    <p><strong>${qIdx + 1}. ${q}</strong></p>
-                    <div class="options" style="display:flex; gap:20px; flex-wrap:wrap; margin-top:10px;">
-                        <label><input type="radio" name="q${qIdx}" value="5" ${savedVal === 5 ? 'checked' : ''}> 總是 (5分)</label>
-                        <label><input type="radio" name="q${qIdx}" value="3" ${savedVal === 3 ? 'checked' : ''}> 偶爾 (3分)</label>
-                        <label><input type="radio" name="q${qIdx}" value="1" ${savedVal === 1 ? 'checked' : ''}> 從不 (1分)</label>
-                    </div>
-                </div>
-            `;
+            html += `<div class="question"><p><strong>${qIdx + 1}. ${q}</strong></p>
+                <div class="options" style="display:flex; gap:20px; margin-top:10px;">
+                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="5" ${savedVal === 5 ? 'checked' : ''}> 總是</label>
+                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="3" ${savedVal === 3 ? 'checked' : ''}> 偶爾</label>
+                    <label style="cursor:pointer;"><input type="radio" name="q${qIdx}" value="1" ${savedVal === 1 ? 'checked' : ''}> 從不</label>
+                </div></div>`;
         });
         wrapper.innerHTML = html;
-
         document.getElementById('prevBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
         document.getElementById('nextBtn').style.display = currentStep === 4 ? 'none' : 'inline-block';
         document.getElementById('submitBtn').style.display = currentStep === 4 ? 'inline-block' : 'none';
     }
 
-    function checkPageComplete() {
-        for (let i = 0; i < 4; i++) {
-            const qIdx = currentStep * 4 + i;
-            if (!document.querySelector(`input[name="q${qIdx}"]:checked`)) return false;
-        }
-        return true;
-    }
-
-    function savePageAnswers() {
-        for (let i = 0; i < 4; i++) {
-            const qIdx = currentStep * 4 + i;
-            const selected = document.querySelector(`input[name="q${qIdx}"]:checked`);
-            if (selected) userAnswers[qIdx] = parseInt(selected.value);
-        }
-    }
-
     function movePage(delta) {
-        if (delta > 0 && !checkPageComplete()) {
-            document.getElementById('error-msg').style.display = 'block';
-            return;
+        if (delta > 0) {
+            for (let i = 0; i < 4; i++) {
+                if (!document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`)) {
+                    document.getElementById('error-msg').style.display = 'block'; return;
+                }
+            }
         }
-        savePageAnswers();
-        currentStep += delta;
-        renderStep();
-        window.scrollTo({ top: document.getElementById('quiz').offsetTop - 80, behavior: 'smooth' });
+        for (let i = 0; i < 4; i++) {
+            const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
+            if (sel) userAnswers[currentStep * 4 + i] = parseInt(sel.value);
+        }
+        currentStep += delta; renderStep();
+        window.scrollTo({ top: document.getElementById('quiz').offsetTop - 100, behavior: 'smooth' });
     }
 
     function calculateFinalScore() {
-        if (!checkPageComplete()) {
-            document.getElementById('error-msg').style.display = 'block';
-            return;
+        for (let i = 0; i < 4; i++) {
+            const sel = document.querySelector(`input[name="q${currentStep * 4 + i}"]:checked`);
+            if (!sel) { document.getElementById('error-msg').style.display = 'block'; return; }
+            userAnswers[currentStep * 4 + i] = parseInt(sel.value);
         }
-        savePageAnswers();
-
-        const categoryScores = [0, 0, 0, 0, 0];
+        const scores =;
         let total = 0;
-        userAnswers.forEach((val, idx) => {
-            categoryScores[Math.floor(idx / 4)] += val;
-            total += val;
-        });
-
-        showResult(total, categoryScores);
+        userAnswers.forEach((v, i) => { scores[Math.floor(i / 4)] += v; total += v; });
+        showResult(total, scores);
     }
 
     function showResult(total, scores) {
         document.getElementById('quiz-form-view').style.display = 'none';
         document.getElementById('result-view').style.display = 'block';
+        
+        let rank = "", icon = "", color = "", desc = "";
+        if (total >= 90) { rank = "金色永續守護者"; icon = "🏆"; color = "#FFD700"; desc = "極致的永續生活家！地球因為有你而美好。"; }
+        else if (total >= 70) { rank = "銀色綠色實踐家"; icon = "🥈"; color = "#E5E4E2"; desc = "很棒的環保意識！你正朝著永續生活穩健邁進。"; }
+        else if (total >= 50) { rank = "銅色環保潛力股"; icon = "🥉"; color = "#CD7F32"; desc = "具備基本概念，只要再多一點行動就能大幅進步。"; }
+        else { rank = "地球觀察員"; icon = "🌱"; color = "#A8E6CF"; desc = "現在開始永遠不晚，從最簡單的減塑開始挑戰吧！"; }
 
-        let rank = "", icon = "", color = "", desc = "", advice = "";
-        if (total >= 90) {
-            rank = "金色永續守護者證書"; icon = "🏆"; color = "#FFD700";
-            desc = "您是責任消費的頂尖典範，完美落實了 SDG 12！";
-            advice = "太棒了！您的綠色影響力已達標。建議可以分享您的生活小撇步給更多人，帶動社區永續轉型。";
-        } else if (total >= 70) {
-            rank = "銀色綠色實踐家證書"; icon = "🥈"; color = "#E5E4E2";
-            desc = "表現優異！您在生活中多方面落實了永續生產與消費。";
-            advice = "您做得很好！可以檢視雷達圖中分數較低的維度（例如：物品再生），嘗試將修補取代購買。";
-        } else if (total >= 50) {
-            rank = "銅色環保潛力股證書"; icon = "🥉"; color = "#CD7F32";
-            desc = "已具備永續意識！只要再多一點點行動，就能大幅改變。";
-            advice = "不錯的開始！試著減少網購次數、或是多支持標有環保標章的產品，這會讓您的指數快速提升。";
-        } else {
-            rank = "地球觀察員認證"; icon = "🌱"; color = "#A8E6CF";
-            desc = "環保種子正在發芽！現在開始行動永遠不嫌晚。";
-            advice = "別擔心，環保可以從最簡單的「吃光餐點」或「自備提袋」開始，每天進步一點點！";
-        }
+        let indexedScores = scores.map((val, i) => ({ name: categoryNames[i], val }));
+        indexedScores.sort((a, b) => a.val - b.val);
 
-        const cert = document.getElementById('certificate-card');
-        cert.style.backgroundColor = color;
+        const weak1 = indexedScores;
+        const weak2 = indexedScores;
+        const best = indexedScores;
+
+        document.getElementById('certificate-card').style.backgroundColor = color;
         document.getElementById('rank-name').innerText = rank;
         document.getElementById('rank-icon').innerText = icon;
         document.getElementById('total-score-val').innerText = `最終分數：${total} / 100`;
         document.getElementById('rank-description').innerText = desc;
-        document.getElementById('personalized-advice').innerText = advice;
+        
+        document.getElementById('personalized-advice').innerHTML = `
+            <p style="margin-bottom: 15px;"><strong style="color: #4A7C59;">🌟 表現最優：${best.name}</strong><br>${encouragement[best.name]}</p>
+            <p style="border-top: 1px solid #eee; padding-top: 15px;"><strong style="color: #d93025;">⚠️ 需加強：${weak1.name}、${weak2.name}</strong><br>建議您可以${paragraphAdvice[weak1.name]}同時，${paragraphAdvice[weak2.name]}</p>
+        `;
 
-        // 初始化雷達圖
-        const ctx = document.getElementById('radarChart').getContext('2d');
-        new Chart(ctx, {
+        new Chart(document.getElementById('radarChart'), {
             type: 'radar',
             data: {
-                labels: ['綠色飲食', '明智購物', '物品再生', '節能減碳', '永續意識'],
-                datasets: [{
-                    label: '能力分佈',
-                    data: scores,
-                    backgroundColor: 'rgba(74, 124, 89, 0.4)',
-                    borderColor: '#4A7C59',
-                    pointBackgroundColor: '#4A7C59',
-                    borderWidth: 3
-                }]
+                labels: categoryNames,
+                datasets: [{ data: scores, backgroundColor: 'rgba(74, 124, 89, 0.4)', borderColor: '#4A7C59', borderWidth: 2 }]
             },
-            options: {
-                scales: { r: { beginAtZero: true, max: 20, ticks: { display: false } } },
-                plugins: { legend: { display: false } }
-            }
+            options: { scales: { r: { max: 20, beginAtZero: true, ticks: { display: false } } }, plugins: { legend: { display: false } } }
         });
         window.scrollTo({ top: document.getElementById('quiz').offsetTop - 50, behavior: 'smooth' });
     }
